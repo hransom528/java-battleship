@@ -1,4 +1,5 @@
 import java.util.Collection;
+import java.util.List;
 import java.lang.reflect.Array;
 
 /**The Table class is a 2D array of type T that has a fixed size
@@ -235,5 +236,23 @@ public class Table<T> implements Cloneable  {
 			}
 		}
 		return clone;
+	}
+	
+	/**Converts list to table
+	 * @param xDimension
+	 * @param yDimension
+	 * @param list
+	 * @return new Table object from list
+	 */
+	public Table<T> toTable(int xDimension, int yDimension, List<T> list) {
+		Table<T> returnTable = new Table<T>(xDimension, yDimension, this.cls);
+		for (int i = 0; i < returnTable.getySize(); i++) {
+			for (int j = 0; j < returnTable.getxSize(); j++) {
+				for (int a = 0; a < list.size(); a++) {
+					returnTable.set(j, i, list.get(a));
+				}
+			}
+		}
+		return returnTable;
 	}
 }
