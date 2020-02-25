@@ -1,6 +1,5 @@
 //Java Battleship v0.1
 //By: Harris Ransom
-
 import java.util.Scanner;
 
 public class javaBattleship {
@@ -9,6 +8,7 @@ public class javaBattleship {
 	static final int BOARD_HEIGHT = 14;
 	static final int MIDLINE = 7;
 	static Table<Character> board = new Table<Character>(BOARD_WIDTH, BOARD_HEIGHT, Character.class);
+	static Ship[] ships = new Ship[4];
 	boolean win = false;
 
 	//MAIN
@@ -16,9 +16,15 @@ public class javaBattleship {
 		Scanner scnr = new Scanner(System.in);
 		System.out.println("Welcome to Java Battleship!");
 		System.out.println("By: Harris Ransom");
-		System.out.println("15 x 14 board, Player 1 on the left");
+		System.out.println("" + BOARD_WIDTH + " x " + BOARD_HEIGHT + " board, Player 1 on the left.");
 		boardSetup();
-		input(scnr);
+		try {
+			input(scnr);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		gameSetup();
+		printBoard();
 
 	}
 
@@ -38,33 +44,68 @@ public class javaBattleship {
 	}
 
 	//Gets player input at start of game
-	public static void input(Scanner scnr) {
+	public static void input(Scanner scnr) throws Exception {
 		int nextInput;
-		Ship[] ships = new Ship[4];
+		String nextString;
+
 		String[] names = {"Battleship", "Carrier", "Cruiser", "Frigate"};
 		boolean[] vertical = new boolean[4];
-		
-		
+
+
 		for (int i = 0; i < ships.length; i++) {
-			System.out.println("Vertical " + names[i] + "?");
-			vertical[i] = scnr.nextBoolean(); 
+			System.out.println("Vertical " + names[i] + " (yes/no)?");
+			nextString = Character.toString(scnr.next().charAt(0));
+			if (nextString.equalsIgnoreCase("y")) {
+				vertical[i] = true; 
+			}
+			else {
+				vertical[i] = false; 
+			}
+
+			switch (i) {
+			case 0:
+				ships[i] = new Battleship(vertical[i]); 
+				break;
+			case 1:
+				ships[i] = new Carrier(vertical[i]) ;
+			case 2:
+				ships[i] = new Cruiser(vertical[i]);
+			case 3:
+				ships[i] = new Frigate(vertical[i]);
+			default:
+				throw new Exception("Error in initializing ships!");
+			}
 			//TODO: Finish Battleship input
-			
+
 			System.out.println("" + names[i] + " X coordinate: ");
 			nextInput = scnr.nextInt();
-			while (nextInput > BOARD_WIDTH) {
-				System.out.println("Input valid X coordinate: ");
+			while (nextInput > BOARD_WIDTH / 2) {
+				System.out.println("Input valid X coordinate on your side: ");
 				nextInput = scnr.nextInt();	
 			}
 			ships[i].setxCoord(nextInput);
-			
+
 			System.out.println("" + names[i] + " Y coordinate: ");
 			nextInput = scnr.nextInt();
-			while (nextInput > BOARD_HEIGHT) {
-				System.out.println("Input valid Y coordinate: ");
+			while (nextInput > BOARD_HEIGHT / 2) {
+				System.out.println("Input valid Y coordinate on your side: ");
 				nextInput = scnr.nextInt();	
 			}
 			ships[i].setyCoord(nextInput);
+		}
+	}
+
+	//Sets up game for playing
+	public static void gameSetup() {
+		for (int i = 0; i < ships.length; i++) {
+			for (int j = 0; j < ships[i].getLength(); j++) {
+				if (ships[i].isVertical()) {
+					board.set(ships[i].getxCoord(), ships[i].getyCoord() + j, ships[i].getIdentifier());
+				}
+				else {
+					board.set(ships[i].getxCoord() + j, ships[i].getyCoord(), ships[i].getIdentifier());
+				}
+			}	
 		}
 	}
 
