@@ -1,6 +1,7 @@
 //Java Battleship v0.1
 //By: Harris Ransom
 import java.util.Scanner;
+import java.util.Random;
 
 public class javaBattleship {
 	//Declares variables
@@ -18,6 +19,7 @@ public class javaBattleship {
 		System.out.println("By: Harris Ransom");
 		System.out.println("" + BOARD_WIDTH + " x " + BOARD_HEIGHT + " board, Player 1 on the left.");
 		boardSetup();
+		printBoard();
 		try {
 			input(scnr);
 		} catch (Exception e) {
