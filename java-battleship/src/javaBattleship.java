@@ -1,16 +1,19 @@
 //Java Battleship v0.1
 //By: Harris Ransom
 import java.util.Scanner;
+import java.util.InputMismatchException;
 import java.util.Random;
 
 public class javaBattleship {
 	//Declares variables
-	static final int BOARD_WIDTH = 15;
+	static final int BOARD_WIDTH = 30;
 	static final int BOARD_HEIGHT = 14;
-	static final int MIDLINE = 7;
+	static final int MIDLINE =  (int) (30.0 / 2.0) - 1;
 	static Table<Character> board = new Table<Character>(BOARD_WIDTH, BOARD_HEIGHT, Character.class);
 	static Ship[] ships = new Ship[4];
-	boolean win = false;
+	static Ship[] computerShips = new Ship[4];
+	static boolean playerWin = false;
+	static boolean computerWin = false;
 
 	//MAIN
 	public static void main(String[] args) {
@@ -18,6 +21,8 @@ public class javaBattleship {
 		System.out.println("Welcome to Java Battleship!");
 		System.out.println("By: Harris Ransom");
 		System.out.println("" + BOARD_WIDTH + " x " + BOARD_HEIGHT + " board, Player 1 on the left.");
+
+		//Sets up game
 		boardSetup();
 		printBoard();
 		try {
@@ -28,6 +33,12 @@ public class javaBattleship {
 		gameSetup();
 		printBoard();
 
+		//While the game does not have a winner
+		while ((!playerWin) || (!computerWin)) {
+			playerMove(scnr);
+			computerMove();
+			printBoard();
+		}
 	}
 
 	//Sets up the board 
@@ -48,67 +59,95 @@ public class javaBattleship {
 	//Gets player input at start of game
 	public static void input(Scanner scnr) throws Exception {
 		int nextInput;
-		String nextString;
-
+		char nextChar;
 		String[] names = {"Battleship", "Carrier", "Cruiser", "Frigate"};
 		boolean[] vertical = new boolean[4];
 
-
+		//For every ship type
 		for (int i = 0; i < ships.length; i++) {
+			//Gets if vertical
 			System.out.println("Vertical " + names[i] + " (yes/no)?");
-			nextString = Character.toString(scnr.next().charAt(0));
-			if (nextString.equalsIgnoreCase("y")) {
+			nextChar = scnr.next().charAt(0);
+			if ((nextChar == 'y') || (nextChar == 'Y')) {
 				vertical[i] = true; 
 			}
 			else {
 				vertical[i] = false; 
 			}
 
-			switch (i) {
-			case 0:
+			//Initializes new ship
+			if (i == 0) {
 				ships[i] = new Battleship(vertical[i]); 
-				break;
-			case 1:
-				ships[i] = new Carrier(vertical[i]) ;
-			case 2:
+			}
+			else if (i == 1) {
+				ships[i] = new Carrier(vertical[i]);
+			}
+			else if (i == 2) {
 				ships[i] = new Cruiser(vertical[i]);
-			case 3:
+			}
+			else if (i == 3) {
 				ships[i] = new Frigate(vertical[i]);
-			default:
+			}
+			else {
 				throw new Exception("Error in initializing ships!");
 			}
-			//TODO: Finish Battleship input
 
+			//Gets ship X coordinate
 			System.out.println("" + names[i] + " X coordinate: ");
-			nextInput = scnr.nextInt();
-			while (nextInput > BOARD_WIDTH / 2) {
+			nextInput = (int) scnr.nextInt();
+			while ((nextInput >= MIDLINE) || (nextInput < 1) || (nextInput > BOARD_WIDTH)) {
 				System.out.println("Input valid X coordinate on your side: ");
-				nextInput = scnr.nextInt();	
+				nextInput = (int) scnr.nextInt();	
 			}
-			ships[i].setxCoord(nextInput);
+			ships[i].setxCoord(nextInput - 1);
 
+			//Gets ship Y coordinate
 			System.out.println("" + names[i] + " Y coordinate: ");
-			nextInput = scnr.nextInt();
-			while (nextInput > BOARD_HEIGHT / 2) {
+			nextInput = (int) scnr.nextInt();
+			while ((nextInput > BOARD_HEIGHT) || (nextInput < 1)) {
 				System.out.println("Input valid Y coordinate on your side: ");
-				nextInput = scnr.nextInt();	
+				nextInput = (int) scnr.nextInt();	
 			}
-			ships[i].setyCoord(nextInput);
+			ships[i].setyCoord(nextInput - 1);
 		}
 	}
 
 	//Sets up game for playing
 	public static void gameSetup() {
+		Random rnd = new Random();
 		for (int i = 0; i < ships.length; i++) {
 			for (int j = 0; j < ships[i].getLength(); j++) {
-				if (ships[i].isVertical()) {
-					board.set(ships[i].getxCoord(), ships[i].getyCoord() + j, ships[i].getIdentifier());
+				if (board.get(j, i) != '*') {
+					if (ships[i].isVertical()) {
+						board.set(ships[i].getxCoord(), ships[i].getyCoord() + j, ships[i].getIdentifier());
+					}
+					else {
+						board.set(ships[i].getxCoord() + j, ships[i].getyCoord(), ships[i].getIdentifier());
+					}
 				}
 				else {
-					board.set(ships[i].getxCoord() + j, ships[i].getyCoord(), ships[i].getIdentifier());
+					throw new IllegalStateException("Ships cross over each other at (" + j + ", " + i + ")!");
 				}
 			}	
 		}
+
+		for (int i = 0; i < computerShips.length; i++) {
+			if (i == 0) {
+				computerShips[i] = new Battleship(rnd.nextBoolean());
+			}
+			else if (i == 1) {
+				computerShips[i] = new Carrier(rnd.nextBoolean()); 
+			}
+			else if (i == 2) {
+				computerShips[i] = new Cruiser(rnd.nextBoolean());
+			}
+			else if (i == 3) {
+				computerShips[i] = new Frigate(rnd.nextBoolean()); 
+			}
+			
+			computerShips[i].setxCoord(xCoord);
+		}
+		//TODO: Initialize computer ships
 	}
 
 	//Outputs the current board 
@@ -128,5 +167,79 @@ public class javaBattleship {
 			}
 		}
 		System.out.println(sb.toString());
+	}
+
+	//Does 1 turn for the player
+	public static void playerMove(Scanner scnr) {
+		int playerXGuess = -1;
+		int playerYGuess = -1;
+
+		//Gets X coord guess
+		System.out.println("Your X coordinate guess?");
+		try {
+			playerXGuess = (int) scnr.nextInt();
+			while ((playerXGuess <= MIDLINE) || (playerXGuess < 1) || (playerXGuess > BOARD_WIDTH)) {
+				System.out.println("Input valid X coordinate: ");
+				playerXGuess = (int) scnr.nextInt();
+			}
+		} catch (InputMismatchException e) {
+			System.out.println("Cannot accept that type of input!");
+			e.printStackTrace();
+		}
+
+
+		//Gets Y coord guess
+		System.out.println("Your Y coordinate guess?");
+		try {
+			playerYGuess = (int) scnr.nextInt();
+			while ((playerYGuess < 1) || (playerYGuess > BOARD_HEIGHT)) {
+				System.out.println("Input valid Y coordinate: ");
+				playerYGuess = (int) scnr.nextInt();
+			}
+		} catch (InputMismatchException e) {
+			System.out.println("Cannot accept that type of input!");
+			e.printStackTrace();
+		}
+
+
+		//Tests for a hit
+		if ((board.get(playerXGuess, playerYGuess) != '*') && (board.get(playerXGuess, playerYGuess) != '~')) {
+			System.out.println("HIT!");
+			board.set(playerXGuess, playerYGuess, 'X');
+		}
+		else {
+			System.out.println("Miss!");
+			board.set(playerXGuess, playerYGuess, '~');
+		}
+	}
+
+	//Does 1 turn for the computer
+	public static void computerMove() {
+		Random rnd = new Random();
+		int computerXGuess;
+		int computerYGuess;
+
+		//Gets random computer guess
+		computerXGuess = rnd.nextInt(MIDLINE);
+		computerYGuess = rnd.nextInt(BOARD_HEIGHT);
+		while ((board.get(computerXGuess, computerYGuess) == 'X') || (board.get(computerXGuess, computerYGuess) == '~')) {
+			computerXGuess = rnd.nextInt(MIDLINE);
+			computerYGuess = rnd.nextInt(BOARD_HEIGHT);
+		}
+
+		//Tests for a hit
+		if (board.get(computerXGuess, computerYGuess) != '*') {
+			System.out.println("HIT!");
+			board.set(computerXGuess, computerYGuess, 'X');
+		}
+		else {
+			System.out.println("Miss!");
+			board.set(computerXGuess, computerYGuess, '~');
+		}
+	}
+
+	//Checks for a win condition
+	public static void checkForWin() {
+
 	}
 }

@@ -108,7 +108,7 @@ public class Ship {
 	/**Sets length
 	 * @param length
 	 */
-	public void setLength(int length) {
+	private void setLength(int length) {
 		this.length = length;
 	}
 }
