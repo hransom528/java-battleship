@@ -115,22 +115,19 @@ public class javaBattleship {
 	//Sets up game for playing
 	public static void gameSetup() {
 		Random rnd = new Random();
-		for (int i = 0; i < ships.length; i++) {
-			for (int j = 0; j < ships[i].getLength(); j++) {
-				if (board.get(j, i) != '*') {
-					if (ships[i].isVertical()) {
-						board.set(ships[i].getxCoord(), ships[i].getyCoord() + j, ships[i].getIdentifier());
-					}
-					else {
-						board.set(ships[i].getxCoord() + j, ships[i].getyCoord(), ships[i].getIdentifier());
-					}
+		//Sets board with player ships
+		for (int a = 0; a < ships.length; a++) {
+			for (int i = 0; i < ships[a].getLength(); i++) {
+				if (ships[a].isVertical()) {
+					board.set(ships[a].getxCoord(), ships[a].getyCoord() + i, ships[a].getIdentifier());
 				}
 				else {
-					throw new IllegalStateException("Ships cross over each other at (" + j + ", " + i + ")!");
+					board.set(ships[a].getxCoord() + i, ships[a].getyCoord(), ships[a].getIdentifier());
 				}
 			}	
 		}
 
+		//Initializes computer ships
 		for (int i = 0; i < computerShips.length; i++) {
 			if (i == 0) {
 				computerShips[i] = new Battleship(rnd.nextBoolean());
@@ -144,25 +141,95 @@ public class javaBattleship {
 			else if (i == 3) {
 				computerShips[i] = new Frigate(rnd.nextBoolean()); 
 			}
-			
+
+			//Generates random coordinates
+			int xCoord = rnd.nextInt(MIDLINE) + MIDLINE;
+			int yCoord = rnd.nextInt(BOARD_HEIGHT - 2);
+			while ((xCoord < 0) || (xCoord > BOARD_WIDTH - 1) || (xCoord < MIDLINE)) {
+				xCoord = rnd.nextInt(MIDLINE) + MIDLINE;
+			}
+			while ((yCoord < 0) || (yCoord > BOARD_HEIGHT - 2)) {
+				yCoord = rnd.nextInt(BOARD_HEIGHT - 2);
+			}
+
+			//Sets random coordinates
 			computerShips[i].setxCoord(xCoord);
+			computerShips[i].setyCoord(yCoord);
 		}
+
+		//Sets computer ships
+		for (int a = 0; a < computerShips.length; a++) {
+			for (int i = 0; i < computerShips[a].getLength(); i++) {
+				if (computerShips[a].isVertical()) {
+					board.set(computerShips[a].getxCoord(), computerShips[a].getyCoord() + i, computerShips[a].getIdentifier());
+				}
+				else {
+					board.set(computerShips[a].getxCoord() + i, computerShips[a].getyCoord(), computerShips[a].getIdentifier());
+				}
+			}	
+		}
+
+
 		//TODO: Initialize computer ships
 	}
 
 	//Outputs the current board 
 	public static void printBoard() {
+		//TODO: Finish printBoard
 		Character[][] table = board.getTable();
 		StringBuilder sb = new StringBuilder();
 
-		for (int i = 0; i < table.length; i++) {
-			for (int j = 0; j < table[0].length; j++) {
-				sb.append(table[i][j]);
-				if (j < table[0].length - 1) {
-					sb.append(" ");
+		//Adds column numbers
+		sb.append("   ");
+		for (int i = 1; i <= board.getxSize(); i++) {
+			if (i < 10) {
+				sb.append(i + "  ");
+			}
+			else {
+				sb.append(i + " ");
+			}
+		}
+		sb.append("\n");
+
+
+		for (int i = 0; i < board.getySize(); i++) {
+			//Adds row numbers
+			if (i <= 8) {
+				sb.append(i + 1 + "  ");
+			}
+			else {
+				sb.append(i + 1 + " ");
+			}
+
+			//Adds characters
+			for (int j = 0; j < board.getxSize(); j++) {
+				//Masks computer ships
+				if (j > MIDLINE) {
+					if (table[i][j] == '~') {
+						sb.append("~");
+					}
+					else if (table[i][j] == 'X') {
+						sb.append('X');
+					}
+					else {
+						sb.append("*");
+					}
+					
+					if (j < table[0].length - 1) {
+						sb.append("  ");
+					}
+					else {
+						sb.append("\n");
+					}
 				}
 				else {
-					sb.append("\n");
+					sb.append(table[i][j]);
+					if (j < table[0].length - 1) {
+						sb.append("  ");
+					}
+					else {
+						sb.append("\n");
+					}
 				}
 			}
 		}
@@ -177,13 +244,17 @@ public class javaBattleship {
 		//Gets X coord guess
 		System.out.println("Your X coordinate guess?");
 		try {
-			playerXGuess = (int) scnr.nextInt();
+			playerXGuess = (int) scnr.nextInt() - 1;
 			while ((playerXGuess <= MIDLINE) || (playerXGuess < 1) || (playerXGuess > BOARD_WIDTH)) {
 				System.out.println("Input valid X coordinate: ");
-				playerXGuess = (int) scnr.nextInt();
+				playerXGuess = (int) scnr.nextInt() - 1;
 			}
 		} catch (InputMismatchException e) {
 			System.out.println("Cannot accept that type of input!");
+			e.printStackTrace();
+		}
+		catch (Exception e) {
+			System.err.println("Unexpected error in X coordinate input!");
 			e.printStackTrace();
 		}
 
@@ -191,24 +262,28 @@ public class javaBattleship {
 		//Gets Y coord guess
 		System.out.println("Your Y coordinate guess?");
 		try {
-			playerYGuess = (int) scnr.nextInt();
+			playerYGuess = (int) scnr.nextInt() - 1;
 			while ((playerYGuess < 1) || (playerYGuess > BOARD_HEIGHT)) {
 				System.out.println("Input valid Y coordinate: ");
-				playerYGuess = (int) scnr.nextInt();
+				playerYGuess = (int) scnr.nextInt() - 1;
 			}
 		} catch (InputMismatchException e) {
 			System.out.println("Cannot accept that type of input!");
+			e.printStackTrace();
+		}
+		catch (Exception e) {
+			System.err.println("Unexpected error in Y coordinate input!");
 			e.printStackTrace();
 		}
 
 
 		//Tests for a hit
 		if ((board.get(playerXGuess, playerYGuess) != '*') && (board.get(playerXGuess, playerYGuess) != '~')) {
-			System.out.println("HIT!");
+			System.out.println("Player 1 HIT!");
 			board.set(playerXGuess, playerYGuess, 'X');
 		}
 		else {
-			System.out.println("Miss!");
+			System.out.println("Player 1 Miss!");
 			board.set(playerXGuess, playerYGuess, '~');
 		}
 	}
@@ -229,11 +304,11 @@ public class javaBattleship {
 
 		//Tests for a hit
 		if (board.get(computerXGuess, computerYGuess) != '*') {
-			System.out.println("HIT!");
+			System.out.println("Computer HIT!");
 			board.set(computerXGuess, computerYGuess, 'X');
 		}
 		else {
-			System.out.println("Miss!");
+			System.out.println("Computer Miss!");
 			board.set(computerXGuess, computerYGuess, '~');
 		}
 	}
