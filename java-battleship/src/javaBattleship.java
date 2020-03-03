@@ -1,5 +1,6 @@
 //Java Battleship v0.1
 //By: Harris Ransom
+
 import java.util.Scanner;
 import java.util.InputMismatchException;
 import java.util.Random;
@@ -14,6 +15,7 @@ public class javaBattleship {
 	static Ship[] computerShips = new Ship[4];
 	static boolean playerWin = false;
 	static boolean computerWin = false;
+	static boolean playAgain = true;
 
 	//MAIN
 	public static void main(String[] args) {
@@ -22,22 +24,47 @@ public class javaBattleship {
 		System.out.println("By: Harris Ransom");
 		System.out.println("" + BOARD_WIDTH + " x " + BOARD_HEIGHT + " board, Player 1 on the left.");
 
-		//Sets up game
-		boardSetup();
-		printBoard();
-		try {
-			input(scnr);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		gameSetup();
-		printBoard();
-
-		//While the game does not have a winner
-		while ((!playerWin) || (!computerWin)) {
-			playerMove(scnr);
-			computerMove();
+		//Loops until player quits game
+		while (playAgain) {
+			//Sets up game
+			boardSetup();
 			printBoard();
+			try {
+				input(scnr);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			gameSetup();
+			printBoard();
+
+			//While the game does not have a winner
+			while ((!playerWin) || (!computerWin)) {
+				playerMove(scnr);
+				computerMove();
+				checkSunkShips();
+				printBoard();
+			}
+
+			//Determines who won
+			if (checkForPlayerWin()) {
+				System.out.println("You won!");
+			}
+			else {
+				System.out.println("You lost!");
+			}
+
+			//Checks to see if player wants to play again
+			System.out.println("Play again?");
+			char nextChar = scnr.next().charAt(0);
+			if ((nextChar == 'y') || (nextChar == 'Y')) {
+				playAgain = true;
+				reset();
+			}
+			else {
+				playAgain = false;
+				System.out.println("Thank you for playing Java Battleship!");
+				System.exit(0);
+			}
 		}
 	}
 
@@ -168,14 +195,10 @@ public class javaBattleship {
 				}
 			}	
 		}
-
-
-		//TODO: Initialize computer ships
 	}
 
 	//Outputs the current board 
 	public static void printBoard() {
-		//TODO: Finish printBoard
 		Character[][] table = board.getTable();
 		StringBuilder sb = new StringBuilder();
 
@@ -214,7 +237,7 @@ public class javaBattleship {
 					else {
 						sb.append("*");
 					}
-					
+
 					if (j < table[0].length - 1) {
 						sb.append("  ");
 					}
@@ -313,8 +336,47 @@ public class javaBattleship {
 		}
 	}
 
-	//Checks for a win condition
-	public static void checkForWin() {
+	//Checks for a player win condition
+	public static boolean checkForPlayerWin() {
+		boolean playerWin = true;
+		for (int i = 0; i < BOARD_HEIGHT; i++) {
+			for (int j = MIDLINE; j < BOARD_WIDTH; j++) {
+				for (int a = 0; a < computerShips.length; a++) {
+					if (board.get(j, i) == computerShips[a].getIdentifier()) {
+						playerWin = false;
+					}
+				}
+			}
+		}
+		return playerWin;
+	}
 
+	//Checks for a computer win condition
+	public static boolean checkForComputerWin() {
+		boolean computerWin = true;
+		for (int i = 0; i < BOARD_HEIGHT; i++) {
+			for (int j = 0; j < MIDLINE; j++) {
+				for (int a = 0; a < ships.length; a++) {
+					if (board.get(j, i) == ships[a].getIdentifier()) {
+						computerWin = false;
+					}
+				}
+			}
+		}
+		return computerWin;
+	}
+
+	//Checks if any ships have been sunk
+	public static void checkSunkShips() {
+		//TODO: Finish checkSunkShips
+	}
+
+	//Resets the game for a rematch
+	public static void reset() {
+		ships = new Ship[4];
+		computerShips = new Ship[4];
+		board = new Table<Character>(BOARD_WIDTH, BOARD_HEIGHT, Character.class);
+		playerWin = false;
+		computerWin = false;
 	}
 }
