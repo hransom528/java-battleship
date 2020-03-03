@@ -16,7 +16,7 @@ public class Table<T> implements Cloneable  {
 	/**Table constructor
 	 * @param xSize 
 	 * @param ySize
-	 * @param T type (in class form)
+	 * @param T 
 	 */
 	@SuppressWarnings("unchecked")
 	public Table(int xSize, int ySize, Class<? extends T> cls) {
