@@ -180,7 +180,7 @@ public class javaBattleship {
 			}
 
 			//Generates random coordinates
-			int xCoord = rnd.nextInt(MIDLINE) + MIDLINE;
+			int xCoord = rnd.nextInt(MIDLINE - 1) + MIDLINE + 1;
 			int yCoord = rnd.nextInt(BOARD_HEIGHT - 2);
 			while ((xCoord < 0) || (xCoord > BOARD_WIDTH - 1) || (xCoord < MIDLINE)) {
 				xCoord = rnd.nextInt(MIDLINE) + MIDLINE;
