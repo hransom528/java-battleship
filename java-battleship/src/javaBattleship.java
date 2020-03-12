@@ -1,9 +1,9 @@
 //Java Battleship v0.1
 //By: Harris Ransom
 
-import java.util.Scanner;
 import java.util.InputMismatchException;
 import java.util.Random;
+import java.util.Scanner;
 
 public class javaBattleship {
 	//Declares variables
@@ -131,19 +131,19 @@ public class javaBattleship {
 
 			//Gets ship X coordinate
 			System.out.println("" + names[i] + " X coordinate: ");
-			nextInput = (int) scnr.nextInt();
+			nextInput = scnr.nextInt();
 			while ((nextInput >= MIDLINE) || (nextInput < 1) || (nextInput > BOARD_WIDTH)) {
 				System.out.println("Input valid X coordinate on your side: ");
-				nextInput = (int) scnr.nextInt();	
+				nextInput = scnr.nextInt();	
 			}
 			ships[i].setxCoord(nextInput - 1);
 
 			//Gets ship Y coordinate
 			System.out.println("" + names[i] + " Y coordinate: ");
-			nextInput = (int) scnr.nextInt();
+			nextInput = scnr.nextInt();
 			while ((nextInput > BOARD_HEIGHT) || (nextInput < 1)) {
 				System.out.println("Input valid Y coordinate on your side: ");
-				nextInput = (int) scnr.nextInt();	
+				nextInput = scnr.nextInt();	
 			}
 			ships[i].setyCoord(nextInput - 1);
 		}
@@ -277,10 +277,10 @@ public class javaBattleship {
 		//Gets X coord guess
 		System.out.println("Your X coordinate guess?");
 		try {
-			playerXGuess = (int) scnr.nextInt() - 1;
+			playerXGuess = scnr.nextInt() - 1;
 			while ((playerXGuess <= MIDLINE) || (playerXGuess < 1) || (playerXGuess > BOARD_WIDTH)) {
 				System.out.println("Input valid X coordinate: ");
-				playerXGuess = (int) scnr.nextInt() - 1;
+				playerXGuess = scnr.nextInt() - 1;
 			}
 		} catch (InputMismatchException e) {
 			System.out.println("Cannot accept that type of input!");
@@ -295,10 +295,10 @@ public class javaBattleship {
 		//Gets Y coord guess
 		System.out.println("Your Y coordinate guess?");
 		try {
-			playerYGuess = (int) scnr.nextInt() - 1;
+			playerYGuess = scnr.nextInt() - 1;
 			while ((playerYGuess < 1) || (playerYGuess > BOARD_HEIGHT)) {
 				System.out.println("Input valid Y coordinate: ");
-				playerYGuess = (int) scnr.nextInt() - 1;
+				playerYGuess = scnr.nextInt() - 1;
 			}
 		} catch (InputMismatchException e) {
 			System.out.println("Cannot accept that type of input!");

@@ -1,6 +1,6 @@
+import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.List;
-import java.lang.reflect.Array;
 
 /**The Table class is a 2D array of type T that has a fixed size
  * @author Harris Ransom
@@ -186,7 +186,7 @@ public class Table<T> implements Cloneable  {
 			T[] tArr = (T[]) new Object[this.size()];
 			for (int i = 0; i < this.table.length; i++) {
 				for (int j = 0; j < this.table[0].length; j++) {
-					tArr[index] = (T) this.table[j][i];
+					tArr[index] = this.table[j][i];
 					index++;
 				}
 			}
@@ -194,7 +194,7 @@ public class Table<T> implements Cloneable  {
 		} else {
 			for (int i = 0; i < this.table.length; i++) {
 				for (int j = 0; j < this.table[0].length; j++) {
-					a[index] = (T) this.table[j][i];
+					a[index] = this.table[j][i];
 					index++;
 				}
 			}
@@ -206,6 +206,7 @@ public class Table<T> implements Cloneable  {
 	 * @return
 	 * @see java.lang.Class#toString()
 	 */
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder().append("[");
 		if (this.isEmpty()) {
