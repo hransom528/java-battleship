@@ -1,7 +1,7 @@
 /**
  * @author Harris Ransom
  */
-public class Ship {
+public abstract class Ship {
 	private int length;
 	private char identifier;
 	private boolean vertical;
