@@ -1,7 +1,7 @@
-<h1 align="center">java-battleship</h1>
+<h1 align="center">Welcome to java-battleship 👋</h1>
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-1.0-blue.svg?cacheSeconds=2592000" />
-  <a href="https://github.com/commanderHR1/java-battleship" target="_blank">
+  <a href="https://github.com/commanderHR1/java-battleship/wiki" target="_blank">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
   </a>
   <a href="https://github.com/commanderHR1/java-battleship/blob/master/LICENSE" target="_blank">
@@ -9,15 +9,21 @@
   </a>
 </p>
 
-> Command-line Battleship game written in Java 
+> Command-line Battleship game written in Java
 
 ### 🏠 [Homepage](https://github.com/commanderHR1/java-battleship)
+
+## Usage
+
+```sh
+java -jar javaBattleship.jar
+```
 
 ## Author
 
 👤 **Harris Ransom**
 
-* Website: https://commanderHR1.github.io
+* Website: https://commanderhr1.github.io
 * Github: [@commanderHR1](https://github.com/commanderHR1)
 
 ## 🤝 Contributing
@@ -34,3 +40,4 @@ Copyright © 2020 [Harris Ransom](https://github.com/commanderHR1).<br />
 This project is [GPLv3.0](https://github.com/commanderHR1/java-battleship/blob/master/LICENSE) licensed.
 
 ***
+_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
