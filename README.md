@@ -40,3 +40,4 @@ Copyright © 2020 [Harris Ransom](https://github.com/commanderHR1).<br />
 This project is [GPLv3.0](https://github.com/commanderHR1/java-battleship/blob/master/LICENSE) licensed.
 
 ***
+_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)
